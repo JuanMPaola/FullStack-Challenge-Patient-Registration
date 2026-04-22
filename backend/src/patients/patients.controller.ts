@@ -19,7 +19,7 @@ import { CreatePatientDto } from './dto/create-patient.dto';
 @ApiTags('patients')
 @Controller('patients')
 export class PatientsController {
-  constructor(private readonly patientsService: PatientsService) {}
+  constructor(private readonly patientsService: PatientsService) { }
 
   @Post()
   @ApiConsumes('multipart/form-data')
@@ -33,6 +33,8 @@ export class PatientsController {
         countryCode: { type: 'string' },
         phoneNumber: { type: 'string' },
         documentType: { type: 'string', enum: ['DNI_AR', 'CI_UY'] },
+        documentNumber: { type: 'string' },
+        dateOfBirth: { type: 'string', description: 'Required for CI_UY. Format: DD/MM/YYYY' },
         documentPhoto: { type: 'string', format: 'binary' },
       },
     },

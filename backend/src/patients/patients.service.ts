@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Patient } from './entities/patient.entity';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { NotificationsService } from '../notifications/notifications.service';
+import { DocumentVerificationService } from '../document-verification/document-verification.service';
 
 @Injectable()
 export class PatientsService {
@@ -11,6 +12,7 @@ export class PatientsService {
     @InjectRepository(Patient)
     private readonly patientRepository: Repository<Patient>,
     private readonly notificationsService: NotificationsService,
+    private readonly documentVerificationService: DocumentVerificationService,
   ) {}
 
   async create(dto: CreatePatientDto, documentPhotoUrl: string): Promise<Patient> {
@@ -18,7 +20,24 @@ export class PatientsService {
     if (existing) {
       throw new BadRequestException('Email already registered');
     }
-    const patient = this.patientRepository.create({ ...dto, documentPhotoUrl });
+
+    if (dto.documentNumber) {
+      const result = await this.documentVerificationService.verify(
+        dto.documentType,
+        dto.documentNumber,
+        dto.dateOfBirth ? { dateOfBirth: dto.dateOfBirth } : undefined,
+      );
+
+      if (!result.isValid) {
+        throw new BadRequestException('Document verification failed');
+      }
+    }
+
+    const patient = this.patientRepository.create({
+      ...dto,
+      documentPhotoUrl,
+      documentVerified: !!dto.documentNumber,
+    });
     const saved = await this.patientRepository.save(patient);
 
     await this.notificationsService.sendRegistrationEmail({

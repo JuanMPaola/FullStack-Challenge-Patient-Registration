@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
 import { DocumentType } from '../entities/patient.entity';
 
 export class CreatePatientDto {
@@ -27,4 +27,14 @@ export class CreatePatientDto {
   @ApiProperty({ enum: DocumentType })
   @IsEnum(DocumentType)
   documentType: DocumentType;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsString()
+  documentNumber?: string;
+
+  @ApiProperty({ required: false, description: 'Required for CI_UY. Format: DD/MM/YYYY' })
+  @IsOptional()
+  @IsString()
+  dateOfBirth?: string;
 }

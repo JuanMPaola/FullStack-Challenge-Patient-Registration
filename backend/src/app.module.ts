@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PatientsModule } from './patients/patients.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { DocumentVerificationModule } from './document-verification/document-verification.module';
 import databaseConfig from './config/database.config';
 import redisConfig from './config/redis.config';
 import mailConfig from './config/mail.config';
@@ -30,6 +31,7 @@ import mailConfig from './config/mail.config';
     }),
     PatientsModule,
     NotificationsModule,
+    DocumentVerificationModule,
   ],
 })
 export class AppModule {}
