@@ -4,9 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PatientsModule } from './patients/patients.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { DocumentVerificationModule } from './document-verification/document-verification.module';
+import { StorageModule } from './storage/storage.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 import databaseConfig from './config/database.config';
 import redisConfig from './config/redis.config';
 import mailConfig from './config/mail.config';
+import { SeederModule } from './seeder/seeder.module';
 
 @Module({
   imports: [
@@ -32,6 +36,10 @@ import mailConfig from './config/mail.config';
     PatientsModule,
     NotificationsModule,
     DocumentVerificationModule,
+    StorageModule,
+    UsersModule,
+    AuthModule,
+    SeederModule
   ],
 })
 export class AppModule {}

@@ -15,7 +15,7 @@ export const PatientCard = ({ patient }: PatientCardProps) => {
     >
       <div className="p-4 flex items-center gap-4">
         <img
-          src={`http://localhost:3000/${patient.documentPhotoUrl}`}
+          src={patient.documentPhotoUrl}
           alt="Document"
           className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-gray-200"
         />
