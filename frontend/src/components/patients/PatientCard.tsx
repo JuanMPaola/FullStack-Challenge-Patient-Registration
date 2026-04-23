@@ -10,7 +10,7 @@ export const PatientCard = ({ patient }: PatientCardProps) => {
 
   return (
     <div
-      className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md cursor-pointer"
+      className="bg-white rounded-2xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md cursor-pointer"
       onClick={() => setExpanded(!expanded)}
     >
       <div className="p-4 flex items-center gap-4">
@@ -21,11 +21,10 @@ export const PatientCard = ({ patient }: PatientCardProps) => {
         />
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-gray-900 truncate">{patient.fullName}</h3>
-          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-            patient.documentVerified
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${patient.documentVerified
               ? 'bg-green-100 text-green-700'
               : 'bg-yellow-100 text-yellow-700'
-          }`}>
+            }`}>
             {patient.documentVerified ? 'Verified' : 'Unverified'}
           </span>
         </div>

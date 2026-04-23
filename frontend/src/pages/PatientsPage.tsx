@@ -6,9 +6,13 @@ import { SubmitModal } from '../components/patients/SumbitModal';
 import { Modal } from '../components/ui/Modal/Modal';
 import { Button } from '../components/ui/button/button';
 import type { CreatePatientPayload } from '../types/patient.types';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export const PatientsPage = () => {
   const { patients, loading, error, createPatient } = usePatients();
+  const { logout, role } = useAuth();
+  const navigate = useNavigate();
   const [formOpen, setFormOpen] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'success' | 'error' | null>(null);
   const [submitError, setSubmitError] = useState<string | undefined>();
@@ -25,8 +29,13 @@ export const PatientsPage = () => {
     }
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-200">
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -35,9 +44,16 @@ export const PatientsPage = () => {
               {patients.length} patient{patients.length !== 1 ? 's' : ''} registered
             </p>
           </div>
-          <Button onClick={() => setFormOpen(true)}>
-            + Add Patient
-          </Button>
+          <div className="flex items-center gap-3">
+            {role === 'admin' && (
+              <Button onClick={() => setFormOpen(true)}>
+                + Add Patient
+              </Button>
+            )}
+            <Button variant="secondary" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
         </div>
 
         <PatientList patients={patients} loading={loading} error={error} />

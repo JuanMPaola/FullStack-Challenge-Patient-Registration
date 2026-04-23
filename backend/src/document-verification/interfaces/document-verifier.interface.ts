@@ -1,7 +1,17 @@
 export interface DocumentVerificationResult {
+  isDocument?: boolean;
   isValid: boolean;
-  fullName?: string;
+  firstName?: string;
+  lastName: string;
   documentNumber?: string;
+}
+
+export interface DocumentScanResult {
+  isDocument: boolean;
+  firstName: string;
+  lastName:string;
+  documentNumber?: string;
+  dateOfBirth?: string;
 }
 
 export interface DocumentVerifier {

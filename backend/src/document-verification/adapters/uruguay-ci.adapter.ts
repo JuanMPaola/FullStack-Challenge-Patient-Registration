@@ -25,13 +25,15 @@ export class UruguayCiAdapter implements DocumentVerifier {
 
             return {
                 isValid: true,
-                fullName: data.data?.fullName,
+                isDocument: true,
+                firstName: data.data?.firstName ?? '',
+                lastName: data.data?.lastName ?? '',
                 documentNumber,
             };
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : 'Unknown error';
             this.logger.warn(`DNI AR verification failed for ${documentNumber}: ${message}`);
-            return { isValid: false };
+            return { isValid: false, firstName: '', lastName: '' };
         }
     }
 }

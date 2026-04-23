@@ -5,12 +5,13 @@ import type { DocumentVerifier, DocumentVerificationResult } from '../interfaces
 export class MockDocumentAdapter implements DocumentVerifier {
   private readonly logger = new Logger(MockDocumentAdapter.name);
 
-  async verify(documentNumber: string): Promise<DocumentVerificationResult> {
-    this.logger.log(`[MOCK] Verifying document: ${documentNumber}`);
+  async verify(): Promise<DocumentVerificationResult> {
     return {
       isValid: true,
-      fullName: 'MOCK USER',
-      documentNumber,
+      isDocument: true,
+      firstName: 'MOCK',
+      lastName: 'USER',
+      documentNumber: '12345678',
     };
   }
 }

@@ -3,20 +3,12 @@ import {
   Get,
   Post,
   Param,
-  UploadedFile,
-  UseInterceptors,
   Body,
   ParseUUIDPipe,
-  BadRequestException,
   UseGuards,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 import {
-  ApiConsumes,
   ApiTags,
-  ApiBody,
   ApiBearerAuth,
   ApiOperation,
   ApiResponse,
@@ -42,49 +34,11 @@ export class PatientsController {
   @ApiResponse({ status: 201, description: 'Patient registered successfully' })
   @ApiResponse({ status: 400, description: 'Validation error or email already registered' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      required: ['fullName', 'email', 'countryCode', 'phoneNumber', 'documentType', 'documentPhoto'],
-      properties: {
-        fullName: { type: 'string' },
-        email: { type: 'string' },
-        countryCode: { type: 'string' },
-        phoneNumber: { type: 'string' },
-        documentType: { type: 'string', enum: ['DNI_AR', 'CI_UY'] },
-        documentNumber: { type: 'string' },
-        dateOfBirth: { type: 'string', description: 'Required for CI_UY. Format: DD/MM/YYYY' },
-        documentPhoto: { type: 'string', format: 'binary' },
-      },
-    },
-  })
-  @UseInterceptors(
-    FileInterceptor('documentPhoto', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, unique + extname(file.originalname));
-        },
-      }),
-      fileFilter: (req, file, cb) => {
-        if (extname(file.originalname).toLowerCase() !== '.jpg') {
-          return cb(new Error('Only .jpg files are allowed'), false);
-        }
-        cb(null, true);
-      },
-    }),
-  )
   async create(
     @Body() dto: CreatePatientDto,
-    @UploadedFile() file: Express.Multer.File,
     @CurrentUser() user: User,
   ) {
-    if (!file) {
-      throw new BadRequestException('Document photo is required');
-    }
-    return this.patientsService.create(dto, file.path, user.id);
+    return this.patientsService.create(dto, user.id);
   }
 
   @Get()

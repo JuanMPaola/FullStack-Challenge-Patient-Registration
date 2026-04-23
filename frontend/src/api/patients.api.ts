@@ -3,26 +3,30 @@ import type { CreatePatientPayload, Patient } from '../types/patient.types';
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
 export const patientsApi = {
-  getAll: async (): Promise<Patient[]> => {
-    const res = await fetch(`${API_URL}/patients`);
+  getAll: async (token: string): Promise<Patient[]> => {
+    const res = await fetch(`${API_URL}/patients`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     if (!res.ok) throw new Error('Failed to fetch patients');
     return res.json();
   },
 
-  create: async (payload: CreatePatientPayload): Promise<Patient> => {
-    const formData = new FormData();
-    formData.append('fullName', payload.fullName);
-    formData.append('email', payload.email);
-    formData.append('countryCode', payload.countryCode);
-    formData.append('phoneNumber', payload.phoneNumber);
-    formData.append('documentType', payload.documentType);
-    formData.append('documentPhoto', payload.documentPhoto);
-    if (payload.documentNumber) formData.append('documentNumber', payload.documentNumber);
-    if (payload.dateOfBirth) formData.append('dateOfBirth', payload.dateOfBirth);
+  getMe: async (token: string): Promise<Patient> => {
+    const res = await fetch(`${API_URL}/patients/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error('Failed to fetch patient profile');
+    return res.json();
+  },
 
+  create: async (payload: CreatePatientPayload, token: string): Promise<Patient> => {
     const res = await fetch(`${API_URL}/patients`, {
       method: 'POST',
-      body: formData,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) {

@@ -27,5 +27,5 @@ export interface CreatePatientPayload {
   documentType: DocumentType;
   documentNumber?: string;
   dateOfBirth?: string;
-  documentPhoto: File;
+  documentPhotoUrl: string;
 }
