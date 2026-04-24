@@ -15,10 +15,10 @@ Admin access:
 
 ## Tech Stack
 
-**Backend:** NestJS · TypeScript · TypeORM · PostgreSQL · Redis · Bull
-**Frontend:** React · TypeScript · Vite · Tailwind CSS
-**Infrastructure:** Docker · Docker Compose
-**Services:** Cloudflare R2 · Verifik · Mailtrap · Twilio (ready)
+- **Backend:** NestJS · TypeScript · TypeORM · PostgreSQL · Redis · Bull
+- **Frontend:** React · TypeScript · Vite · Tailwind CSS
+- **Infrastructure:** Docker · Docker Compose
+- **Services:** Cloudflare R2 · Verifik · Mailtrap · Twilio (ready)
 
 ## Features
 
@@ -70,27 +70,21 @@ The app will be available at:
 
 These can be changed via the ADMIN_EMAIL and ADMIN_PASSWORD environment variables.
 
-### Local Development (without Docker)
+### 3. Run the project
 
-Start only the infrastructure services:
+```bash
+docker compose up --build
+```
 
-    docker compose up postgres redis
+Once all containers are running:
 
-Run the backend locally:
+- **Frontend:** http://localhost:5173
+- **Backend API:** http://localhost:3000
+- **API Docs (Swagger):** http://localhost:3000/api
 
-    cd backend
-    npm install
-    npm run start:dev
+### ⚠️ Port conflicts
 
-Run the frontend locally:
-
-    cd frontend
-    npm install
-    npm run dev
-
-## API Documentation
-
-The API is documented with Swagger. Once the backend is running, visit /api to explore all endpoints interactively. The documentation includes request/response schemas, authentication requirements, and example payloads for all routes.
+This project uses ports `5432` (PostgreSQL), `6379` (Redis), and `5173` / `3000` (frontend/backend). If any of these ports are already in use on your machine, `docker compose up` will fail.
 
 ## Environment Variables
 
