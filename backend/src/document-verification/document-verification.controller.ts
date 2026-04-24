@@ -3,7 +3,7 @@ import {
   UploadedFile, UseInterceptors, BadRequestException, Body,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+import { memoryStorage } from 'multer';
 import { extname } from 'path';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { DocumentVerificationService } from './document-verification.service';
@@ -32,13 +32,7 @@ export class DocumentVerificationController {
   })
   @UseInterceptors(
     FileInterceptor('documentPhoto', {
-      storage: diskStorage({
-        destination: './uploads',
-        filename: (req, file, cb) => {
-          const unique = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          cb(null, unique + extname(file.originalname));
-        },
-      }),
+      storage: memoryStorage(),
       fileFilter: (req, file, cb) => {
         if (extname(file.originalname).toLowerCase() !== '.jpg') {
           return cb(new Error('Only .jpg files are allowed'), false);
@@ -52,6 +46,6 @@ export class DocumentVerificationController {
     @Body('documentType') documentType: string,
   ) {
     if (!file) throw new BadRequestException('Document photo is required');
-    return this.documentVerificationService.scanDocument(file.path, documentType);
+    return this.documentVerificationService.scanDocument(file.buffer, documentType);
   }
 }

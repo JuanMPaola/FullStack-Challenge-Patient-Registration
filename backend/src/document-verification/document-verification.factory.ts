@@ -16,10 +16,10 @@ export class DocumentVerificationFactory {
   getVerifier(documentType: DocumentType): DocumentVerifier {
     switch (documentType) {
       case DocumentType.DNI_AR:
-        //return this.argentinaDniAdapter;
+       // return this.argentinaDniAdapter;
         return this.mockDocumentAdapter;
       case DocumentType.CI_UY:
-        //return this.uruguayCiAdapter;
+       // return this.uruguayCiAdapter;
         return this.mockDocumentAdapter;
     }
   }

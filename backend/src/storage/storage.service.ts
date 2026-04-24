@@ -21,6 +21,13 @@ export class StorageService {
     return url;
   }
 
+  async uploadBuffer(buffer: Buffer, mimeType: string): Promise<string> {
+    const key = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+    const url = await this.provider.upload(key, buffer, mimeType);
+    this.logger.log(`Uploaded buffer: ${key}`);
+    return url;
+  }
+
   getFile(key: string) {
     return this.provider.get(key);
   }

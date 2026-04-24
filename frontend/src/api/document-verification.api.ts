@@ -8,6 +8,7 @@ export interface ScanResult {
   documentNumber?: string;
   dateOfBirth?: string;
   photoUrl?: string;
+  documentType?: string;
 }
 
 export const documentVerificationApi = {

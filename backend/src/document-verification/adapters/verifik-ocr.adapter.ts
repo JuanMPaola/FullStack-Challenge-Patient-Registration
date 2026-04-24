@@ -23,13 +23,20 @@ export class VerifikOcrAdapter {
                     },
                 },
             );
-            console.log('Verifik response:', JSON.stringify(data, null, 2));
+            const verifikDocType = data.data?.documentType ?? data.data?.OCRExtraction?.documentType;
+            const issuingAuthority = data.data?.OCRExtraction?.issuingAuthority ?? '';
+
+            const isUruguay = verifikDocType === 'CCUY' ||
+                issuingAuthority.toLowerCase().includes('uruguay');
+
+            const mappedType = isUruguay ? 'CI_UY' : 'DNI_AR';
             return {
                 isDocument: true,
                 firstName: data.data?.OCRExtraction?.firstName ?? '',
                 lastName: data.data?.OCRExtraction?.lastName ?? '',
                 documentNumber: data.data?.OCRExtraction?.documentNumber,
                 dateOfBirth: data.data?.OCRExtraction?.dateOfBirth,
+                documentType: mappedType,
             };
         } catch (error: unknown) {
             const message = error instanceof Error ? error.message : 'Unknown error';

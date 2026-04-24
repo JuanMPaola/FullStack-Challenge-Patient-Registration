@@ -59,10 +59,13 @@ export const RegisterModal = ({ isOpen, onClose }: RegisterModalProps) => {
   };
 
   const handleScanned = (result: ScanResult) => {
-    if (result.firstName || result.lastName) setFullName(result.firstName + ' ' + result.lastName);
-    if (result.documentNumber) setDocumentNumber(result.documentNumber);
-    if (result.dateOfBirth) setDateOfBirth(result.dateOfBirth);
-    if (result.photoUrl) setDocumentPhotoUrl(result.photoUrl);
+    console.log('documentType from scan:', result.documentType);
+    if (result.documentType) setDocumentType(result.documentType);
+    const name = `${result.firstName ?? ''} ${result.lastName ?? ''}`.trim();
+    setFullName(name);
+    setDocumentNumber(result.documentNumber ?? '');
+    setDateOfBirth(result.dateOfBirth ?? '');
+    setDocumentPhotoUrl(result.photoUrl ?? '');
     setStep(2);
   };
 

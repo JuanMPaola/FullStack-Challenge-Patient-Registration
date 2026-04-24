@@ -4,14 +4,14 @@ import { Button } from '../ui/button/button';
 import { PhoneInput } from './PhoneInput';
 import { DocumentDropzone } from './DocumentDropzone';
 import { DocumentType } from '../../types/patient.types';
+import { documentVerificationApi } from '../../api/document-verification.api';
+import { useAuth } from '../../context/AuthContext';
 import type { CreatePatientPayload } from '../../types/patient.types';
 
 interface FormErrors {
   fullName?: string;
   email?: string;
-  countryCode?: string;
   phoneNumber?: string;
-  documentType?: string;
   documentNumber?: string;
   documentPhoto?: string;
 }
@@ -21,6 +21,7 @@ interface PatientFormProps {
 }
 
 export const PatientForm = ({ onSubmit }: PatientFormProps) => {
+  const { token } = useAuth();
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [countryCode, setCountryCode] = useState('+54');
@@ -31,30 +32,16 @@ export const PatientForm = ({ onSubmit }: PatientFormProps) => {
   const [documentPhoto, setDocumentPhoto] = useState<File | null>(null);
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
+  const [scanning, setScanning] = useState(false);
 
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
-
-    if (!fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
-    } else if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(fullName)) {
-      newErrors.fullName = 'Full name must contain only letters';
-    }
-
-    if (!email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!email.endsWith('@gmail.com')) {
-      newErrors.email = 'Only @gmail.com addresses are accepted';
-    }
-
-    if (!phoneNumber.trim()) {
-      newErrors.phoneNumber = 'Phone number is required';
-    }
-
-    if (!documentPhoto) {
-      newErrors.documentPhoto = 'Document photo is required';
-    }
-
+    if (!fullName.trim()) newErrors.fullName = 'Full name is required';
+    else if (!/^[a-zA-ZÀ-ÿ\s]+$/.test(fullName)) newErrors.fullName = 'Full name must contain only letters';
+    if (!email.trim()) newErrors.email = 'Email is required';
+    else if (!email.endsWith('@gmail.com')) newErrors.email = 'Only @gmail.com addresses are accepted';
+    if (!phoneNumber.trim()) newErrors.phoneNumber = 'Phone number is required';
+    if (!documentPhoto) newErrors.documentPhoto = 'Document photo is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -64,7 +51,11 @@ export const PatientForm = ({ onSubmit }: PatientFormProps) => {
     if (!validate()) return;
 
     setLoading(true);
+    setScanning(true);
     try {
+      const scanResult = await documentVerificationApi.scan(documentPhoto!, documentType, token!);
+      setScanning(false);
+
       await onSubmit({
         fullName,
         email,
@@ -73,10 +64,13 @@ export const PatientForm = ({ onSubmit }: PatientFormProps) => {
         documentType: documentType as CreatePatientPayload['documentType'],
         documentNumber: documentNumber || undefined,
         dateOfBirth: dateOfBirth || undefined,
-        documentPhoto: documentPhoto!,
+        documentPhotoUrl: scanResult.photoUrl ?? '',
       });
+    } catch (e) {
+      setErrors({ documentPhoto: e instanceof Error ? e.message : 'Upload failed' });
     } finally {
       setLoading(false);
+      setScanning(false);
     }
   };
 
@@ -89,7 +83,6 @@ export const PatientForm = ({ onSubmit }: PatientFormProps) => {
         onChange={(e) => setFullName(e.target.value)}
         error={errors.fullName}
       />
-
       <Input
         label="Email"
         type="email"
@@ -98,7 +91,6 @@ export const PatientForm = ({ onSubmit }: PatientFormProps) => {
         onChange={(e) => setEmail(e.target.value)}
         error={errors.email}
       />
-
       <PhoneInput
         countryCode={countryCode}
         phoneNumber={phoneNumber}
@@ -106,7 +98,6 @@ export const PatientForm = ({ onSubmit }: PatientFormProps) => {
         onPhoneNumberChange={setPhoneNumber}
         phoneNumberError={errors.phoneNumber}
       />
-
       <div className="flex flex-col gap-1">
         <label className="text-sm font-medium text-gray-700">Document Type</label>
         <select
@@ -118,15 +109,13 @@ export const PatientForm = ({ onSubmit }: PatientFormProps) => {
           <option value={DocumentType.CI_UY}>🇺🇾 Cédula Uruguay</option>
         </select>
       </div>
-
       <Input
         label="Document Number"
-        placeholder="43034266"
+        placeholder="45096432"
         value={documentNumber}
         onChange={(e) => setDocumentNumber(e.target.value)}
         error={errors.documentNumber}
       />
-
       {documentType === DocumentType.CI_UY && (
         <Input
           label="Date of Birth (DD/MM/YYYY)"
@@ -135,15 +124,13 @@ export const PatientForm = ({ onSubmit }: PatientFormProps) => {
           onChange={(e) => setDateOfBirth(e.target.value)}
         />
       )}
-
       <DocumentDropzone
         file={documentPhoto}
         onFileChange={setDocumentPhoto}
         error={errors.documentPhoto}
       />
-
       <Button type="submit" loading={loading} className="w-full justify-center mt-2">
-        Register Patient
+        {scanning ? 'Uploading document...' : 'Register Patient'}
       </Button>
     </form>
   );

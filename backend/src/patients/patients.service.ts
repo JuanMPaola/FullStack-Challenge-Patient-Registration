@@ -40,7 +40,7 @@ export class PatientsService {
 
     const saved = await this.patientRepository.save(patient);
 
-    await this.notificationsService.sendRegistrationEmail({
+    this.notificationsService.sendRegistrationEmail({
       to: saved.email,
       fullName: saved.fullName,
     });

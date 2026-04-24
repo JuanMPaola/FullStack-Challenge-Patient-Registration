@@ -59,7 +59,7 @@ export const StepPersonalData = ({
 
       <Input
         label="Document Number"
-        placeholder="43034266"
+        placeholder="45096432"
         value={documentNumber}
         onChange={(e) => onDocumentNumberChange(e.target.value)}
         error={errors.documentNumber}

@@ -25,13 +25,13 @@ export class DocumentVerificationService {
     return verifier.verify(documentNumber, extraParams);
   }
 
-  async scanDocument(filePath: string, documentType: string): Promise<DocumentScanResult & { photoUrl: string }> {
-    const result = await this.verifykOcrAdapter/* mockOcrAdapter */.scanDocument(
-      readFileSync(filePath).toString('base64'),
+  async scanDocument(fileBuffer: Buffer, documentType: string): Promise<DocumentScanResult & { photoUrl: string }> {
+    const result = await this./* verifykOcrAdapter */mockOcrAdapter.scanDocument(
+      fileBuffer.toString('base64'),
       documentType,
     );
 
-    const photoUrl = await this.storageService.uploadFile(filePath, 'image/jpeg');
+    const photoUrl = await this.storageService.uploadBuffer(fileBuffer, 'image/jpeg');
 
     return { ...result, photoUrl };
   }

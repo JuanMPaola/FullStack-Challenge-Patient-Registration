@@ -47,7 +47,7 @@ export const PhoneInput = ({
         </div>
         <div className="flex-1">
           <Input
-            placeholder="1134380201"
+            placeholder="1135347363"
             value={phoneNumber}
             onChange={(e) => onPhoneNumberChange(e.target.value)}
             error={phoneNumberError}

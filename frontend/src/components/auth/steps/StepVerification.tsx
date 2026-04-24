@@ -30,11 +30,7 @@ export const StepVerification = ({
     setError(null);
     try {
       const result = await documentVerificationApi.scan(selectedFile, documentType, token);
-      if (!result.isDocument) {
-        setError('The image does not appear to be a valid document. Please try again.');
-        setFile(null);
-        return;
-      }
+      console.log('Raw scan result:', result);
       onScanned(result);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Scan failed');
@@ -43,7 +39,7 @@ export const StepVerification = ({
       setScanning(false);
     }
   };
-
+  
   return (
     <div className="flex flex-col gap-4">
       <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-blue-700">

@@ -9,9 +9,10 @@ export interface DocumentVerificationResult {
 export interface DocumentScanResult {
   isDocument: boolean;
   firstName: string;
-  lastName:string;
+  lastName: string;
   documentNumber?: string;
   dateOfBirth?: string;
+  documentType?: string;
 }
 
 export interface DocumentVerifier {
