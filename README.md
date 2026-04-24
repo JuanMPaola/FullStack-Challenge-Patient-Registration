@@ -2,6 +2,10 @@
 
 A full-stack patient registration application built with NestJS, React, and PostgreSQL. Designed for medical environments requiring secure patient onboarding with document verification.
 
+## Live Demo
+
+https://patients-app-frontend-production.up.railway.app/login
+
 ## Tech Stack
 
 **Backend:** NestJS · TypeScript · TypeORM · PostgreSQL · Redis · Bull
@@ -19,7 +23,7 @@ A full-stack patient registration application built with NestJS, React, and Post
 - 3-step patient registration flow with camera capture support
 - SMS notification support ready to enable (Twilio)
 - Admin seeder on startup
-- Swagger API documentation
+- Swagger API documentation at /api
 
 ## Architecture Patterns
 
@@ -76,6 +80,10 @@ Run the frontend locally:
     cd frontend
     npm install
     npm run dev
+
+## API Documentation
+
+The API is documented with Swagger. Once the backend is running, visit /api to explore all endpoints interactively. The documentation includes request/response schemas, authentication requirements, and example payloads for all routes.
 
 ## Environment Variables
 
@@ -147,9 +155,12 @@ To use mock verification (no API credits consumed), the MockDocumentAdapter and 
 
 ## Deployment
 
-The application is ready to deploy on Railway or any Docker-compatible platform.
+The application is deployed on Railway. Each service (backend, frontend, postgres, redis) runs as an independent Railway service.
 
-Each service (backend, frontend, postgres, redis) is containerized and configured via docker-compose.yml. Set all required environment variables in the platform's dashboard before deploying.
+To deploy your own instance:
+- Create a Railway project with four services: backend, frontend, postgres, redis
+- Set all required environment variables in each service dashboard
+- Use the provided Dockerfiles for backend and frontend builds
 
 For production, ensure:
 - NODE_ENV=production
