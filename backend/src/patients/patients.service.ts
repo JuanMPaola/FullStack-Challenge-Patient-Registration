@@ -21,20 +21,23 @@ export class PatientsService {
       throw new BadRequestException('Email already registered');
     }
 
+    let documentVerified = false;
     if (dto.documentNumber) {
-      const result = await this.documentVerificationService.verify(
-        dto.documentType,
-        dto.documentNumber,
-        dto.dateOfBirth ? { dateOfBirth: dto.dateOfBirth } : undefined,
-      );
-      if (!result.isValid) {
-        throw new BadRequestException('Document verification failed');
+      try {
+        const result = await this.documentVerificationService.verify(
+          dto.documentType,
+          dto.documentNumber,
+          dto.dateOfBirth ? { dateOfBirth: dto.dateOfBirth } : undefined,
+        );
+        documentVerified = result.isValid;
+      } catch {
+        documentVerified = false;
       }
     }
 
     const patient = this.patientRepository.create({
       ...dto,
-      documentVerified: !!dto.documentNumber,
+      documentVerified,
       userId,
     });
 
@@ -43,7 +46,7 @@ export class PatientsService {
     this.notificationsService.sendRegistrationEmail({
       to: saved.email,
       fullName: saved.fullName,
-    });
+    }).catch((err) => console.error('Email queue error:', err));
 
     return saved;
   }

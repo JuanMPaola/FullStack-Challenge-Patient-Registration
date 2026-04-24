@@ -6,6 +6,13 @@ A full-stack patient registration application built with NestJS, React, and Post
 
 https://patients-app-frontend-production.up.railway.app/login
 
+### Demo Credentials
+
+Admin access:
+
+    email: admin@admin.com
+    password: admin123
+
 ## Tech Stack
 
 **Backend:** NestJS · TypeScript · TypeORM · PostgreSQL · Redis · Bull
