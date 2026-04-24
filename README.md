@@ -38,6 +38,33 @@ Admin access:
 - **Strategy Pattern** — notification channels (email/SMS)
 - **Adapter Pattern** — document verification providers (AR/UY)
 - **Factory Pattern** — runtime adapter selection
+## Authentication & User System
+
+The application implements a role-based authentication system built on top of JWT tokens. This was designed to support two distinct user types with different access levels and registration flows.
+
+### User Roles
+
+There are two roles in the system: admin and patient. An admin has full access to the patient list and can register new patients manually. A patient can only view their own profile.
+
+## Authentication & User System
+
+The app uses JWT-based authentication with two roles: admin and patient.
+
+### Roles
+
+Admins have full access to the patient list and can register patients manually. Patients can only view their own profile.
+
+### How it works
+
+On login or register, the backend signs a JWT containing the user ID, email, and role. The token is stored in localStorage and sent as a Bearer token on every request. Two guards protect each endpoint — JwtAuthGuard validates the token, RolesGuard checks the required role via the @Roles() decorator.
+
+### Registration
+
+Patients register in 3 steps: create account → scan document via Verifik OCR → confirm extracted data. The admin account is seeded automatically on startup using ADMIN_EMAIL and ADMIN_PASSWORD environment variables.
+
+### Data Model
+
+User stores authentication data. Patient stores personal/medical data with a one-to-one foreign key to User. Admins have no patient profile.
 
 ## Getting Started
 
