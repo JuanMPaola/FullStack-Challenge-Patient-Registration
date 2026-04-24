@@ -155,6 +155,10 @@ See .env.example for all required variables. Key integrations to configure:
             ├── pages/                     # PatientsPage, PatientProfilePage, LoginPage
             └── types/                     # TypeScript interfaces
 
+## Document Storage
+
+Document photos are uploaded directly to Cloudflare R2, an S3-compatible object storage service. Files are never stored on the server — they go from memory directly to R2 via the AWS SDK, and the resulting public URL is saved to the database. This ensures the application is stateless and scales horizontally without shared file system concerns.
+
 ## SMS Notifications
 
 SMS support is built and ready. To activate within 2 months:
