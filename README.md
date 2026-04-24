@@ -4,9 +4,9 @@ A full-stack patient registration application built with NestJS, React, and Post
 
 ## Tech Stack
 
-**Backend:** NestJS · TypeScript · TypeORM · PostgreSQL · Redis · Bull  
-**Frontend:** React · TypeScript · Vite · Tailwind CSS  
-**Infrastructure:** Docker · Docker Compose  
+**Backend:** NestJS · TypeScript · TypeORM · PostgreSQL · Redis · Bull
+**Frontend:** React · TypeScript · Vite · Tailwind CSS
+**Infrastructure:** Docker · Docker Compose
 **Services:** Cloudflare R2 · Verifik · Mailtrap · Twilio (ready)
 
 ## Features
@@ -57,7 +57,7 @@ The app will be available at:
     email: admin@admin.com
     password: admin123
 
-These can be changed via the `ADMIN_EMAIL` and `ADMIN_PASSWORD` environment variables.
+These can be changed via the ADMIN_EMAIL and ADMIN_PASSWORD environment variables.
 
 ### Local Development (without Docker)
 
@@ -79,17 +79,17 @@ Run the frontend locally:
 
 ## Environment Variables
 
-See `.env.example` for all required variables. Key integrations to configure:
+See .env.example for all required variables. Key integrations to configure:
 
 | Variable | Description |
 |---|---|
-| `JWT_SECRET` | Secret key for JWT signing |
-| `MAIL_*` | Mailtrap SMTP credentials for email testing |
-| `VERIFIK_TOKEN` | Verifik API token for document OCR and verification |
-| `R2_*` | Cloudflare R2 credentials for document storage |
-| `TWILIO_*` | Twilio credentials — set `SMS_ENABLED=true` to activate |
-| `ADMIN_EMAIL` | Default admin account email |
-| `ADMIN_PASSWORD` | Default admin account password |
+| JWT_SECRET | Secret key for JWT signing |
+| MAIL_* | Mailtrap SMTP credentials for email testing |
+| VERIFIK_TOKEN | Verifik API token for document OCR and verification |
+| R2_* | Cloudflare R2 credentials for document storage |
+| TWILIO_* | Twilio credentials — set SMS_ENABLED=true to activate |
+| ADMIN_EMAIL | Default admin account email |
+| ADMIN_PASSWORD | Default admin account password |
 
 ## Project Structure
 
@@ -123,14 +123,35 @@ See `.env.example` for all required variables. Key integrations to configure:
 
 SMS support is built and ready. To activate within 2 months:
 
-1. Add Twilio credentials to `.env`
-2. Set `SMS_ENABLED=true`
-3. Call `notificationsService.sendRegistrationSms()` where needed
+1. Add Twilio credentials to .env
+2. Set SMS_ENABLED=true
+3. Call notificationsService.sendRegistrationSms() where needed
 
-No code changes required — the `SmsStrategy` is already implemented.
+No code changes required — the SmsStrategy is already implemented.
 
 ## Document Verification
 
-The app uses Verifik to verify Argentine DNI and Uruguayan Cédula de Identidad. The verification adapters are swappable — to change providers, implement the `DocumentVerifier` interface and register the new adapter in `DocumentVerificationFactory`.
+The app uses Verifik to verify Argentine DNI and Uruguayan Cédula de Identidad. The verification adapters are swappable — to change providers, implement the DocumentVerifier interface and register the new adapter in DocumentVerificationFactory.
 
-To use mock verification (no API credits consumed), the `MockDocumentAdapter` and `MockOcrAdapter` are available for development.
+To use mock verification (no API credits consumed), the MockDocumentAdapter and MockOcrAdapter are available for development.
+
+## Future Improvements
+
+- **JWT Secret configuration** — Currently falls back to a default value if JWT_SECRET is not set. In production, always set a strong random secret via environment variables.
+- **JWT config module** — Centralize JWT configuration using a dedicated config module (jwtConfig) consistent with the rest of the app's config pattern.
+- **Document verification flow** — Two-step verification: scan document first, then validate number against Verifik's database records.
+- **SMS notifications** — Twilio integration is ready, set SMS_ENABLED=true and add credentials to activate.
+- **Production email domain** — Configure a verified sending domain in Mailtrap for production email delivery to any address.
+- **Migrations** — Replace TypeORM synchronize with proper migration files for production database management.
+- **Refresh tokens** — Add refresh token support for better session management.
+
+## Deployment
+
+The application is ready to deploy on Railway or any Docker-compatible platform.
+
+Each service (backend, frontend, postgres, redis) is containerized and configured via docker-compose.yml. Set all required environment variables in the platform's dashboard before deploying.
+
+For production, ensure:
+- NODE_ENV=production
+- All third-party credentials are set (Verifik, R2, Mailtrap, JWT_SECRET)
+- ADMIN_EMAIL and ADMIN_PASSWORD are changed from defaults

@@ -15,6 +15,7 @@ import { SmsStrategy } from './notification.strategy.interface.ts/sms strategy';
         redis: {
           host: config.get('redis.host'),
           port: config.get<number>('redis.port'),
+          password: config.get('REDIS_PASSWORD') ?? undefined,
         },
       }),
     }),
