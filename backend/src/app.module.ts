@@ -29,7 +29,7 @@ import { SeederModule } from './seeder/seeder.module';
         password: config.get('database.password'),
         database: config.get('database.name'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true,
+        synchronize: process.env.NODE_ENV !== 'production',
         logging: true,
       }),
     }),
