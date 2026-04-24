@@ -26,7 +26,7 @@ export class DocumentVerificationService {
   }
 
   async scanDocument(fileBuffer: Buffer, documentType: string): Promise<DocumentScanResult & { photoUrl: string }> {
-    const result = await this./* verifykOcrAdapter */mockOcrAdapter.scanDocument(
+    const result = await this.verifykOcrAdapter.scanDocument(
       fileBuffer.toString('base64'),
       documentType,
     );
